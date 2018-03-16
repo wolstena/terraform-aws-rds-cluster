@@ -37,6 +37,62 @@ resource "aws_security_group" "default" {
   tags = "${module.label.tags}"
 }
 
+resource "aws_rds_cluster_parameter_group" "default" {
+  name        = "${module.label.id}"
+  description = "DB cluster parameter group"
+  family      = "${var.cluster_family}"
+//  parameter   = ["${var.cluster_parameters}"]
+
+  parameter {
+    name      = "character_set_client"
+    value     = "utf8"
+  }
+
+  parameter {
+    name      = "character_set_connection"
+    value     = "utf8"
+  }
+
+  parameter {
+    name      = "character_set_database"
+    value     = "utf8"
+  }
+
+  parameter {
+    name      = "character_set_results"
+    value     = "utf8"
+  }
+
+  parameter {
+    name      = "character_set_server"
+    value     = "utf8"
+  }
+
+  parameter {
+    name      = "collation_connection"
+    value     = "utf8_bin"
+  }
+
+  parameter {
+    name      = "collation_connection"
+    value     = "utf8_bin"
+  }
+
+  parameter {
+    name      = "lower_case_table_names"
+    value     = "1"
+    apply_method = "pending-reboot"
+  }
+
+  parameter {
+    name      = "skip-character-set-client-handshake"
+    value     = "1"
+    apply_method = "pending-reboot"
+  }
+
+  tags        = "${module.label.tags}"
+}
+
 resource "aws_rds_cluster" "default" {
   cluster_identifier              = "${module.label.id}"
   availability_zones              = ["${var.availability_zones}"]
@@ -49,7 +105,7 @@ resource "aws_rds_cluster" "default" {
   skip_final_snapshot             = true
   apply_immediately               = true
   snapshot_identifier             = "${var.snapshot_identifier}"
-  vpc_security_group_ids          = ["${aws_security_group.default.id}"]
+  vpc_security_group_ids          = ["${aws_security_group.default.id}","${var.security_groups}"]
   preferred_maintenance_window    = "${var.maintenance_window}"
   db_subnet_group_name            = "${aws_db_subnet_group.default.name}"
   db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.default.name}"
@@ -77,18 +133,10 @@ resource "aws_db_subnet_group" "default" {
   tags        = "${module.label.tags}"
 }
 
-resource "aws_rds_cluster_parameter_group" "default" {
-  name        = "${module.label.id}"
-  description = "DB cluster parameter group"
-  family      = "${var.cluster_family}"
-  parameter   = ["${var.cluster_parameters}"]
-  tags        = "${module.label.tags}"
-}
-
 module "dns_master" {
   source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
   namespace = "${var.namespace}"
-  name      = "master.${var.name}"
+  name      = "master.${var.name}-${module.label.stage}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${aws_rds_cluster.default.endpoint}"]
@@ -97,7 +145,7 @@ module "dns_master" {
 module "dns_replicas" {
   source    = "git::https://github.com/cloudposse/terraform-aws-route53-cluster-hostname.git?ref=tags/0.2.1"
   namespace = "${var.namespace}"
-  name      = "replicas.${var.name}"
+  name      = "replicas.${var.name}-${module.label.stage}"
   stage     = "${var.stage}"
   zone_id   = "${var.zone_id}"
   records   = ["${aws_rds_cluster.default.reader_endpoint}"]

@@ -41,54 +41,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
   name        = "${module.label.id}"
   description = "DB cluster parameter group"
   family      = "${var.cluster_family}"
-//  parameter   = ["${var.cluster_parameters}"]
-
-  parameter {
-    name      = "character_set_client"
-    value     = "utf8"
-  }
-
-  parameter {
-    name      = "character_set_connection"
-    value     = "utf8"
-  }
-
-  parameter {
-    name      = "character_set_database"
-    value     = "utf8"
-  }
-
-  parameter {
-    name      = "character_set_results"
-    value     = "utf8"
-  }
-
-  parameter {
-    name      = "character_set_server"
-    value     = "utf8"
-  }
-
-  parameter {
-    name      = "collation_connection"
-    value     = "utf8_bin"
-  }
-
-  parameter {
-    name      = "collation_connection"
-    value     = "utf8_bin"
-  }
-
-  parameter {
-    name      = "lower_case_table_names"
-    value     = "1"
-    apply_method = "pending-reboot"
-  }
-
-  parameter {
-    name      = "skip-character-set-client-handshake"
-    value     = "1"
-    apply_method = "pending-reboot"
-  }
+  parameter   = ["${var.cluster_parameters}"]
 
   tags        = "${module.label.tags}"
 }

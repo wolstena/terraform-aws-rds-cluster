@@ -46,6 +46,15 @@ resource "aws_rds_cluster_parameter_group" "default" {
   tags        = "${module.label.tags}"
 }
 
+resource "aws_db_parameter_group" "default" {
+  name        = "${module.label.id}"
+  description = "DB parameter group"
+  family      = "${var.cluster_family}"
+  parameter   = ["${var.db_parameters}"]
+
+  tags        = "${module.label.tags}"
+}
+
 resource "aws_rds_cluster" "default" {
   cluster_identifier              = "${module.label.id}"
   availability_zones              = ["${var.availability_zones}"]
@@ -74,6 +83,7 @@ resource "aws_rds_cluster_instance" "default" {
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
   publicly_accessible  = false
+  db_parameter_group_name  = "${aws_db_parameter_group.default}"
   tags                 = "${module.label.tags}"
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"

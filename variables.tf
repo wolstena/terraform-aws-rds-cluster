@@ -117,6 +117,12 @@ variable "tags" {
 variable "cluster_parameters" {
   type        = "list"
   default     = []
+  description = "List of Cluster parameters to apply"
+}
+
+variable "db" {
+  type        = "list"
+  default     = []
   description = "List of DB parameters to apply"
 }
 

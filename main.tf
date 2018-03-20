@@ -83,7 +83,7 @@ resource "aws_rds_cluster_instance" "default" {
   instance_class       = "${var.instance_type}"
   db_subnet_group_name = "${aws_db_subnet_group.default.name}"
   publicly_accessible  = false
-  db_parameter_group_name  = "${aws_db_parameter_group.default}"
+  db_parameter_group_name  = "${aws_db_parameter_group.default.name}"
   tags                 = "${module.label.tags}"
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"

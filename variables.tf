@@ -114,6 +114,13 @@ variable "tags" {
   description = "Additional tags (e.g. `map('BusinessUnit`,`XYZ`)"
 }
 
+variable "db_parameters" {
+  type        = "list"
+  default     = []
+  description = "List of DB parameters to apply"
+}
+
+
 variable "cluster_parameters" {
   type        = "list"
   default     = []

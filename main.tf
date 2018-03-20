@@ -38,7 +38,7 @@ resource "aws_security_group" "default" {
 }
 
 resource "aws_rds_cluster_parameter_group" "default" {
-  name        = "${module.label.id}"
+  name        = "${module.label.id}-cluster"
   description = "DB cluster parameter group"
   family      = "${var.cluster_family}"
   parameter   = ["${var.cluster_parameters}"]
@@ -47,7 +47,7 @@ resource "aws_rds_cluster_parameter_group" "default" {
 }
 
 resource "aws_db_parameter_group" "default" {
-  name        = "${module.label.id}"
+  name        = "${module.label.id}-db"
   description = "DB parameter group"
   family      = "${var.cluster_family}"
   parameter   = ["${var.db_parameters}"]

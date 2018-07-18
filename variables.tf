@@ -38,6 +38,12 @@ variable "availability_zones" {
   description = "List of Availability Zones that instances in the DB cluster can be created in"
 }
 
+// variable "aws_region" {
+//   type        = "string"
+//   description = "AWS Region to use"
+// }
+
+
 variable "instance_type" {
   type        = "string"
   default     = "db.t2.small"
@@ -119,7 +125,6 @@ variable "db_parameters" {
   default     = []
   description = "List of DB parameters to apply"
 }
-
 
 variable "cluster_parameters" {
   type        = "list"

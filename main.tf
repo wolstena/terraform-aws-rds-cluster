@@ -58,13 +58,17 @@ resource "aws_db_parameter_group" "default" {
 resource "aws_rds_cluster" "default" {
   cluster_identifier              = "${module.label.id}"
   availability_zones              = ["${var.availability_zones}"]
+  // availability_zones              = [
+  //   "${format("%sa", "${var.aws_region}")}",
+  //   "${format("%sb", "${var.aws_region}")}"
+  // ]
   database_name                   = "${var.db_name}"
   master_username                 = "${var.admin_user}"
   master_password                 = "${var.admin_password}"
   backup_retention_period         = "${var.retention_period}"
   preferred_backup_window         = "${var.backup_window}"
   final_snapshot_identifier       = "${lower(module.label.id)}"
-  skip_final_snapshot             = true
+  skip_final_snapshot             = false
   apply_immediately               = true
   snapshot_identifier             = "${var.snapshot_identifier}"
   vpc_security_group_ids          = ["${aws_security_group.default.id}","${var.security_groups}"]
@@ -74,6 +78,8 @@ resource "aws_rds_cluster" "default" {
   tags                            = "${module.label.tags}"
   engine                          = "${var.engine}"
   engine_version                  = "${var.engine_version}"
+  storage_encrypted               = "${var.storage_encrypted}"
+  kms_key_id                      = "${var.kms_key_id}"
 }
 
 resource "aws_rds_cluster_instance" "default" {
@@ -85,6 +91,7 @@ resource "aws_rds_cluster_instance" "default" {
   publicly_accessible  = false
   db_parameter_group_name  = "${aws_db_parameter_group.default.name}"
   tags                 = "${module.label.tags}"
+  //copy_tags_to_snapshot = true
   engine               = "${var.engine}"
   engine_version       = "${var.engine_version}"
 }

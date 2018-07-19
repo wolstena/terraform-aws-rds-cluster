@@ -177,6 +177,11 @@ variable "storage_encrypted" {
   default     = "false"
 }
 
+variable "kms_key_id" {
+  description = "AWS KMS id to use for database encryption. Set storage_encrypted to use."
+  default     = ""
+}
+
 variable "skip_final_snapshot" {
   description = "Determines whether a final DB snapshot is created before the DB cluster is deleted"
   default     = "true"
